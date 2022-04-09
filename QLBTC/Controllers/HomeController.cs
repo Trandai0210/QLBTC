@@ -41,6 +41,7 @@ namespace QLBTC.Controllers
             return View();
         }
 
+        [HttpPost]
         public IActionResult Login(User user)
         {
             List<User> listUser = new List<User>();
@@ -48,8 +49,9 @@ namespace QLBTC.Controllers
             var account = listUser.Where(u => u.Username == user.Username && u.Password == user.Password).ToList();
             if (account.Count != 0)
             {
-                HttpContext.Session.SetString("userId", account.FirstOrDefault().UserId.ToString());
+                user = account[0];
                 Boolean isAdmin = Context.UserPermissions.ToList().Where(p => p.UserId == user.UserId && p.PermissionId == 1).Count() != 0;
+                HttpContext.Session.SetString("UserId", user.UserId.ToString());
                 if (isAdmin)
                     return RedirectToAction("Index");
                 else
